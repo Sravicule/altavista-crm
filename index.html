@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#002F87">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AV CRM">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Alta Vista CRM">
+<meta name="msapplication-TileColor" content="#002F87">
+<link rel="manifest" href="manifest.json">
+<title>Alta Vista CRM · Sales Platform</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --blue:#002F87;--blue2:#003DA6;--blue-dark:#001B52;--blue-light:#E8EFF8;
+  --gold:#C9A84C;--gold2:#E8C96A;--gold-light:#FBF5E6;
+  --white:#FFFFFF;--bg:#F0F4FA;--border:#D4DCF0;--hover:#EBF0FA;
+  --text:#001440;--text2:#3A4F7A;
+}
+html,body,#root{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Georgia',serif;background:var(--bg);-webkit-font-smoothing:antialiased}
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,47,135,.2);border-radius:3px}
+.crm-wrap{display:flex;height:100vh;height:100dvh;background:var(--bg);font-size:13px;color:var(--text);overflow:hidden}
+/* ── SIDEBAR ── */
+.sidebar{width:222px;min-width:222px;background:var(--blue-dark);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.sidebar-logo{padding:18px 14px 14px;border-bottom:1px solid rgba(201,168,76,.2);flex-shrink:0}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-av{width:36px;height:36px;border-radius:7px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--blue-dark);letter-spacing:1px;flex-shrink:0}
+.logo-text{color:#E8EFF8;font-size:13px;line-height:1.3}
+.logo-sub{color:rgba(201,168,76,.65);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-top:1px}
+.nav-grp-hdr{display:flex;align-items:center;justify-content:space-between;padding:9px 12px 4px;cursor:pointer;user-select:none;-webkit-user-select:none;min-height:36px}
+.nav-grp-hdr:hover{background:rgba(255,255,255,.04)}
+.nav-grp-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(201,168,76,.75);font-family:sans-serif;font-weight:600}
+.nav-arrow{color:rgba(201,168,76,.55);font-size:9px;transition:transform .22s;display:inline-block;font-style:normal}
+.nav-arrow.open{transform:rotate(90deg)}
+.nav-items-wrap{overflow:hidden;transition:max-height .25s ease}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px 8px 16px;cursor:pointer;color:#9AB0D8;font-family:sans-serif;font-size:12px;transition:all .15s;border-left:2px solid transparent;min-height:40px}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#C8D8F0}
+.nav-item.active{background:rgba(201,168,76,.14);color:var(--gold);border-left-color:var(--gold);font-weight:600}
+.nav-solo{display:flex;align-items:center;gap:8px;padding:8px 10px 8px 14px;cursor:pointer;color:#9AB0D8;font-family:sans-serif;font-size:12px;transition:all .15s;border-left:2px solid transparent;min-height:40px}
+.nav-solo:hover{background:rgba(255,255,255,.07);color:#C8D8F0}
+.nav-solo.active{background:rgba(201,168,76,.14);color:var(--gold);border-left-color:var(--gold);font-weight:600}
+.nav-sep{height:1px;background:rgba(255,255,255,.06);margin:6px 10px}
+.nav-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+/* ── TOPBAR ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:52px;background:var(--white);border-bottom:2px solid var(--gold);display:flex;align-items:center;padding:0 16px;gap:8px;flex-shrink:0}
+.tb-av{width:26px;height:26px;border-radius:5px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.5px;flex-shrink:0}
+.tb-title{font-size:11px;color:var(--text2);font-family:sans-serif;font-weight:600;white-space:nowrap}
+.tb-sep{color:var(--border);font-size:16px;flex-shrink:0}
+.tb-page{font-size:12px;color:var(--blue);font-family:sans-serif;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-actions{margin-left:auto;display:flex;gap:6px;align-items:center;flex-shrink:0}
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:4px;padding:7px 14px;border-radius:6px;cursor:pointer;font-size:11px;font-family:sans-serif;border:1.5px solid;transition:all .15s;user-select:none;-webkit-user-select:none;min-height:36px;touch-action:manipulation}
+.btn-primary{background:var(--blue);color:var(--white);border-color:var(--blue)}
+.btn-primary:hover,.btn-primary:active{background:var(--blue2)}
+.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border)}
+.btn-ghost:hover,.btn-ghost:active{background:var(--hover)}
+.btn-sm{padding:4px 8px;font-size:10px;min-height:28px}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+/* ── KPI ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--blue),var(--gold))}
+.kpi-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);font-family:sans-serif;margin-bottom:5px}
+.kpi-value{font-size:24px;color:var(--blue)}
+.kpi-sub{font-size:10px;color:var(--text2);margin-top:3px;font-family:sans-serif}
+/* ── CARDS ── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:900px){.dash-grid{grid-template-columns:1fr}}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);font-family:sans-serif;font-weight:700}
+.card-body{padding:14px 16px}
+.empty-state{text-align:center;padding:50px 20px;color:var(--text2)}
+.empty-icon{font-size:36px;margin-bottom:14px;opacity:.25}
+.empty-txt{font-size:12px;font-family:sans-serif;line-height:1.6}
+/* ── FILTERS ── */
+.filters{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.filter-select{padding:7px 9px;border:1.5px solid var(--border);border-radius:6px;background:var(--white);font-size:11px;font-family:sans-serif;color:var(--text2);cursor:pointer;min-height:36px;touch-action:manipulation}
+.filter-select:focus{border-color:var(--blue);outline:none}
+.search-box{flex:1;min-width:140px;padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;background:var(--white);font-size:11px;font-family:sans-serif;min-height:36px}
+.search-box:focus{border-color:var(--blue);outline:none}
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-family:sans-serif;font-size:11px}
+.tbl th{padding:9px 10px;text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--border);background:var(--blue-light);white-space:nowrap;font-weight:700}
+.tbl td{padding:10px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--hover)}
+/* ── BADGES ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-family:sans-serif;font-weight:600}
+.badge-blue{background:#dce8f8;color:#002F87}
+.badge-green{background:#dff2df;color:#1A5C1A}
+.badge-gold{background:#fdf2d8;color:#7A5A10}
+.badge-gray{background:#EEF0F5;color:#4A5580}
+.badge-hc{background:#ede8f8;color:#3A1A7A}
+.badge-red{background:#ffe8e8;color:#7A1A1A}
+/* ── MODAL ── */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,15,60,.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;overflow-y:auto}
+.modal{background:var(--white);border-radius:12px;padding:24px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border)}
+.modal-title{font-size:15px;color:var(--blue);margin-bottom:16px;padding-bottom:10px;border-bottom:3px solid var(--gold)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:500px){.form-grid{grid-template-columns:1fr}}
+.form-row{margin-bottom:12px}
+.form-label{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:4px;font-family:sans-serif;font-weight:600}
+.form-input,.form-select,.form-textarea{width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;color:var(--text);background:var(--white);font-family:sans-serif;-webkit-appearance:none;min-height:40px}
+.form-input:focus,.form-select:focus{border-color:var(--blue);outline:none}
+.form-textarea{resize:vertical;min-height:60px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+/* ── PIPELINE ── */
+.pipe-wrap{display:flex;gap:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px;min-height:280px}
+.pipe-col{min-width:200px;background:var(--blue-light);border-radius:10px;padding:12px;flex-shrink:0;border:1px solid var(--border)}
+.pipe-col-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.pipe-col-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);font-family:sans-serif;font-weight:700}
+.pipe-col-cnt{background:var(--blue);color:var(--white);border-radius:10px;padding:1px 8px;font-size:10px;font-family:sans-serif}
+.prosp-mini{background:var(--white);border:1px solid var(--border);border-radius:7px;padding:10px;margin-bottom:7px;cursor:pointer;transition:border-color .15s}
+.prosp-mini:hover{border-color:var(--gold)}
+.prosp-mini-name{font-size:12px;font-weight:600;margin-bottom:3px;font-family:sans-serif;color:var(--blue)}
+.prosp-mini-meta{font-size:10px;color:var(--text2);font-family:sans-serif}
+/* ── SETTINGS ── */
+.stabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:18px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.stab{padding:10px 15px;cursor:pointer;font-size:11px;font-family:sans-serif;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;min-height:40px;display:flex;align-items:center}
+.stab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
+.ss{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px}
+.ss-title{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);font-family:sans-serif;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--gold)}
+.nota-chip{display:inline-block;background:var(--gold-light);color:#7A5010;border:1px solid var(--gold);border-radius:3px;padding:1px 6px;font-size:9px;font-family:sans-serif}
+.sku-row{display:grid;grid-template-columns:3fr 60px 80px 80px 28px;gap:6px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+/* ── LOGIN ── */
+.login-wrap{width:100%;height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;background:var(--blue-dark);padding:16px}
+.login-card{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:44px 40px;width:100%;max-width:380px;text-align:center}
+@media(max-width:400px){.login-card{padding:32px 24px}}
+.login-logo{width:68px;height:68px;border-radius:14px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--blue-dark);margin:0 auto 14px;letter-spacing:1px}
+.login-brand{color:#fff;font-size:22px;margin-bottom:4px}
+.login-sub{color:rgba(201,168,76,.8);font-size:10px;letter-spacing:3px;text-transform:uppercase;font-family:sans-serif;margin-bottom:30px}
+.login-input{width:100%;padding:13px 14px;border:1px solid rgba(201,168,76,.35);border-radius:8px;background:rgba(255,255,255,.08);color:#fff;font-size:14px;margin-bottom:10px;font-family:sans-serif;outline:none;transition:border-color .15s;-webkit-appearance:none;min-height:48px;touch-action:manipulation}
+.login-input:focus{border-color:var(--gold)}
+.login-input::placeholder{color:rgba(255,255,255,.35)}
+.login-btn{width:100%;padding:14px;border-radius:8px;background:var(--gold);color:var(--blue-dark);border:none;font-size:15px;cursor:pointer;transition:all .15s;margin-top:6px;font-weight:700;min-height:50px;touch-action:manipulation;-webkit-appearance:none}
+.login-btn:hover,.login-btn:active{background:var(--gold2)}
+.login-error{color:#ff8080;font-size:12px;font-family:sans-serif;margin-top:6px;min-height:18px}
+.login-footer{color:rgba(201,168,76,.45);font-size:10px;font-family:sans-serif;margin-top:20px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--blue);font-family:sans-serif;flex-shrink:0;border:1px solid var(--border)}
+.user-chip{display:flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid var(--border);border-radius:20px;background:var(--white);cursor:default}
+.user-chip-name{font-size:11px;font-family:sans-serif;color:var(--text2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// Register Service Worker for offline / iOS PWA support
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+<script>
+const {useState,useEffect}=React;
+const h=React.createElement;
+
+// ── USERS ──
+const USERS=[
+  {id:1,email:'sebaravicule@gmail.com',pass:'CRM26',name:'Sebas R',role:'admin'},
+  {id:2,email:'julia.cerutti@lutecia.com.ar',pass:'JUCRM26',name:'Julia Cerutti',role:'user'},
+];
+
+const PROV=['CABA','Buenos Aires','Catamarca','Chaco','Chubut','Córdoba','Corrientes','Entre Ríos','Formosa','Jujuy','La Pampa','La Rioja','Mendoza','Misiones','Neuquén','Río Negro','Salta','San Juan','San Luis','Santa Cruz','Santa Fe','Santiago del Estero','Tierra del Fuego','Tucumán'];
+const STAGES=['Lead','Contactado','Interesado','Presentación','Negociación','Conquista'];
+const fc=n=>typeof n==='number'?'$'+n.toLocaleString('es-AR'):'—';
+const VEND=[{id:1,nombre:'Sole Ramirez',email:'sole@lutecia.com.ar',mercado:'Argentina - CABA'},{id:2,nombre:'Matias',email:'matias@lutecia.com.ar',mercado:'Argentina'},{id:3,nombre:'Sebas R',email:'sebas@lutecia.com.ar',mercado:'Argentina'},{id:4,nombre:'Mariano N',email:'mariano@lutecia.com.ar',mercado:'Argentina'}];
+const PORT=[
+{id:1,m:'AV',l:'Alto',s:'Alta Vista Alto 2021',p:'6x750ml',u:165900,c:995400,n:'EXCLUSIVO ALOCACIÓN'},
+{id:2,m:'AV',l:'Single Vineyard',s:'Olympe Malbec Pucará',p:'6x750ml',u:69000,c:414000,n:'LANZAMIENTO'},
+{id:3,m:'AV',l:'Single Vineyard',s:'Alizarine',p:'6x750ml',u:69000,c:414000},
+{id:4,m:'AV',l:'Single Vineyard',s:'Serenade',p:'6x750ml',u:69000,c:414000},
+{id:5,m:'AV',l:'Single Vineyard',s:'Temis',p:'6x750ml',u:69000,c:414000},
+{id:6,m:'AV',l:'Single Vineyard',s:'Albaneve',p:'6x750ml',u:69000,c:414000},
+{id:7,m:'AV',l:'Single Vineyard',s:'Olympe Torrontés Pucará',p:'6x750ml',u:48000,c:288000},
+{id:8,m:'AV',l:'Terroir Selection',s:'TS Malbec',p:'6x750ml',u:31200,c:187200},
+{id:9,m:'AV',l:'Terroir Selection',s:'TS Cabernet Sauvignon',p:'6x750ml',u:31200,c:187200},
+{id:10,m:'AV',l:'Terroir Selection',s:'TS Malbec Salta',p:'6x750ml',u:31200,c:187200},
+{id:11,m:'AV',l:'Los Escasos',s:'Los Escasos Cabernet Sauvignon',p:'6x750ml',u:22000,c:132000},
+{id:12,m:'AV',l:'Los Escasos',s:'Los Escasos Syrah',p:'6x750ml',u:22000,c:132000},
+{id:13,m:'AV',l:'Los Escasos',s:'Los Escasos Petit Verdot',p:'6x750ml',u:22000,c:132000,n:'sin stock'},
+{id:14,m:'AV',l:'Atemporal',s:'Atemporal Blend Albaneve',p:'6x750ml',u:22000,c:132000},
+{id:15,m:'AV',l:'Atemporal',s:'Atemporal Assemblage Blanc',p:'6x750ml',u:24900,c:149400},
+{id:16,m:'AV',l:'Estate Premium',s:'EP Malbec 750ml',p:'6x750ml',u:15800,c:94800},
+{id:17,m:'AV',l:'Estate Premium',s:'EP Cabernet Sauvignon 750ml',p:'6x750ml',u:15800,c:94800},
+{id:18,m:'AV',l:'Estate Premium',s:'EP Cabernet Franc 750ml',p:'6x750ml',u:15800,c:94800},
+{id:19,m:'AV',l:'Estate Premium',s:'EP Pinot Noir 750ml',p:'6x750ml',u:15800,c:94800},
+{id:20,m:'AV',l:'Estate Premium',s:'EP Bonarda 750ml',p:'6x750ml',u:15800,c:94800},
+{id:21,m:'AV',l:'Estate Premium',s:'EP Chardonnay 750ml',p:'6x750ml',u:15800,c:94800},
+{id:22,m:'AV',l:'Estate Premium',s:'EP Torrontés 750ml',p:'6x750ml',u:15800,c:94800},
+{id:23,m:'AV',l:'Estate Premium',s:'EP Sauvignon Blanc 750ml',p:'6x750ml',u:15800,c:94800,n:'sin stock'},
+{id:24,m:'AV',l:'Estate Premium',s:'EP Malbec 375ml',p:'12x375ml',u:10100,c:121200},
+{id:25,m:'AV',l:'Estate Premium',s:'EP Cab Sauvignon 375ml',p:'12x375ml',u:10100,c:121200},
+{id:26,m:'AV',l:'Estate Premium',s:'EP Torrontés 375ml',p:'12x375ml',u:10100,c:121200},
+{id:27,m:'AV',l:'Finca Monteflores',s:'Finca Monteflores Malbec Sin Sulfito',p:'6x750ml',u:13800,c:82800,n:'FairTrade'},
+{id:28,m:'AV',l:'VIVE',s:'VIVE Malbec',p:'6x750ml',u:11800,c:70800},
+{id:29,m:'AV',l:'VIVE',s:'VIVE Cabernet Sauvignon',p:'6x750ml',u:11800,c:70800},
+{id:30,m:'AV',l:'VIVE',s:'VIVE Chardonnay',p:'6x750ml',u:11800,c:70800},
+{id:31,m:'AV',l:'VIVE',s:'VIVE Malbec Rosé',p:'6x750ml',u:11800,c:70800},
+{id:32,m:'AV',l:'VIVE',s:'VIVE Red Blend',p:'6x750ml',u:13800,c:82800},
+{id:33,m:'AV',l:'Atemporal Esp.',s:'Atemporal Brut Nature BdB',p:'6x750ml',u:31000,c:186000},
+{id:34,m:'AV',l:'Atemporal Esp.',s:'Atemporal Brut Blanco',p:'6x750ml',u:31000,c:186000},
+{id:35,m:'AV',l:'Atemporal Esp.',s:'Atemporal Extra Brut CH-PN NR Blanco',p:'6x750ml',u:28500,c:171000},
+{id:36,m:'AV',l:'Atemporal Esp.',s:'Atemporal Extra Brut PN NR-PCH Rosado',p:'6x750ml',u:28500,c:171000},
+{id:37,m:'AV',l:'Sparkling',s:'Alta Vista Brut Nature',p:'6x750ml',u:14700,c:88200},
+{id:38,m:'AV',l:'Sparkling',s:'Alta Vista Extra Brut Blanc de Blancs',p:'6x750ml',u:14700,c:88200},
+{id:39,m:'AV',l:'Sparkling',s:'Alta Vista Extra Brut Rosé',p:'6x750ml',u:14700,c:88200},
+{id:40,m:'AV',l:'VIVE Sparkling',s:'VIVE Sweet Sparkling',p:'6x750ml',u:13500,c:81000},
+{id:41,m:'AV',l:'Altaval',s:'Altaval Malbec 2016',p:'6x750ml',u:79000,c:474000,n:'California USA'},
+{id:42,m:'HC',l:'Barzi Canale',s:'Barzi Canale Pinot Noir',p:'3x750ml',u:150000,c:450000,n:'LANZAMIENTO'},
+{id:43,m:'HC',l:'Barzi Canale',s:'Barzi Canale Blend de Familia',p:'3x750ml',u:100000,c:300000},
+{id:44,m:'HC',l:'Barzi Canale',s:'Dos Cielos',p:'3x750ml',u:100000,c:300000,n:'VINO EXCLUSIVO'},
+{id:45,m:'HC',l:'Gran Reserva',s:'HC Gran Reserva Pinot Noir',p:'6x750ml',u:49000,c:294000},
+{id:46,m:'HC',l:'Gran Reserva',s:'HC Gran Reserva Merlot',p:'6x750ml',u:45000,c:270000},
+{id:47,m:'HC',l:'Gran Reserva',s:'HC Gran Reserva Malbec',p:'6x750ml',u:45000,c:270000},
+{id:48,m:'HC',l:'Gran Reserva',s:'HC Gran Reserva Cabernet Franc',p:'6x750ml',u:45000,c:270000},
+{id:49,m:'HC',l:'Old Vineyard',s:'Old Vineyard Pinot Noir',p:'6x750ml',u:37500,c:225000},
+{id:50,m:'HC',l:'Old Vineyard',s:'Old Vineyard Malbec',p:'6x750ml',u:31500,c:189000},
+{id:51,m:'HC',l:'Old Vineyard',s:'Old Vineyard Red Blend',p:'6x750ml',u:31500,c:189000},
+{id:52,m:'HC',l:'Old Vineyard',s:'Old Vineyard Riesling',p:'6x750ml',u:31500,c:189000},
+{id:53,m:'HC',l:'Old Vineyard',s:'Old Vineyard Semillón',p:'6x750ml',u:31500,c:189000},
+{id:54,m:'HC',l:'Old Vineyard',s:'Old Vineyard Pinot Noir Rosé',p:'6x750ml',u:31500,c:189000},
+{id:55,m:'HC',l:'Estate HC',s:'Estate Sauvignon Gris',p:'6x750ml',u:22000,c:132000,n:'NOVEDAD'},
+{id:56,m:'HC',l:'Estate HC',s:'Estate Pinot Noir',p:'6x750ml',u:22000,c:132000},
+{id:57,m:'HC',l:'Estate HC',s:'Estate Merlot',p:'6x750ml',u:17500,c:105000},
+{id:58,m:'HC',l:'Estate HC',s:'Estate Malbec',p:'6x750ml',u:17500,c:105000},
+{id:59,m:'HC',l:'Estate HC',s:'Estate Sauvignon Blanc',p:'6x750ml',u:17500,c:105000},
+{id:60,m:'HC',l:'Intimo',s:'Intimo Malbec',p:'6x750ml',u:13600,c:81600},
+{id:61,m:'HC',l:'Intimo',s:'Intimo Cabernet-Merlot-Malbec',p:'6x750ml',u:13600,c:81600},
+{id:62,m:'HC',l:'Blush',s:'Blush Rosado Dulce',p:'6x750ml',u:10800,c:64800},
+{id:63,m:'HC',l:'Marcus',s:'Marcus Malbec',p:'6x750ml',u:9000,c:54000},
+{id:64,m:'HC',l:'Marcus',s:'Marcus Sauvignon Blanc',p:'6x750ml',u:9000,c:54000},
+];
+const NAV=[
+  {t:'solo',id:'dashboard',ic:'📊',lb:'Dashboard'},
+  {t:'solo',id:'planning',ic:'📋',lb:'Planning'},
+  {t:'sep'},
+  {t:'grp',lb:'PROSPECCION',it:[{id:'buscar',ic:'🔍',lb:'Buscar / Agregar'},{id:'prospectos',ic:'🏪',lb:'Prospectos'},{id:'pipeline',ic:'🔄',lb:'Pipeline'}]},
+  {t:'grp',lb:'ACTIVIDAD',it:[{id:'visitas',ic:'🚗',lb:'Visitas'},{id:'activaciones',ic:'🍷',lb:'Activaciones'},{id:'tareas',ic:'✓',lb:'Tareas'},{id:'placements',ic:'📖',lb:'Menu Placements'}]},
+  {t:'grp',lb:'CUENTAS',it:[{id:'clientes',ic:'🏆',lb:'Clientes'},{id:'ordenes',ic:'📦',lb:'Órdenes de Pedido'},{id:'propuestas',ic:'📄',lb:'Propuestas'},{id:'contactos',ic:'👥',lb:'Contactos'}]},
+  {t:'grp',lb:'OPERACIONES',it:[{id:'depletions',ic:'📉',lb:'Depletions'},{id:'rutas',ic:'🗺',lb:'Rutas'},{id:'reportes',ic:'📈',lb:'Reportes'}]},
+  {t:'sep'},
+  {t:'solo',id:'reuniones',ic:'🤝',lb:'Reuniones'},
+  {t:'solo',id:'agenda',ic:'📅',lb:'Agenda'},
+  {t:'sep'},
+  {t:'solo',id:'settings',ic:'⚙️',lb:'Settings'},
+];
+const PTITLES={dashboard:'Dashboard',planning:'Planning',buscar:'Buscar / Agregar',prospectos:'Prospectos',pipeline:'Pipeline',visitas:'Visitas',activaciones:'Activaciones',tareas:'Tareas',placements:'Menu Placements',clientes:'Clientes',ordenes:'Órdenes de Pedido',propuestas:'Propuestas Comerciales',contactos:'Contactos',depletions:'Depletions',rutas:'Rutas',reportes:'Reportes',reuniones:'Reuniones',agenda:'Agenda',settings:'Settings'};
+
+function dbKey(uid){return 'av5_u'+uid}
+function ldDb(uid){try{const d=localStorage.getItem(dbKey(uid));return d?JSON.parse(d):{}}catch{return{}}}
+function svDb(uid,d){try{localStorage.setItem(dbKey(uid),JSON.stringify(d))}catch{}}
+
+function Sidebar({pg,setPg,logout,user}){
+  const[op,setOp]=useState({PROSPECCION:true,ACTIVIDAD:false,CUENTAS:false,OPERACIONES:false});
+  const tog=k=>setOp(o=>({...o,[k]:!o[k]}));
+  return h('div',{className:'sidebar'},
+    h('div',{className:'sidebar-logo'},h('div',{className:'logo-mark'},h('div',{className:'logo-av'},'AV'),h('div',null,h('div',{className:'logo-text'},'Alta Vista'),h('div',{className:'logo-sub'},'CRM · Lutecia')))),
+    h('div',{style:{flex:1,paddingTop:6}},NAV.map((n,i)=>{
+      if(n.t==='sep')return h('div',{key:i,className:'nav-sep'});
+      if(n.t==='solo')return h('div',{key:i,className:'nav-solo'+(pg===n.id?' active':''),onClick:()=>setPg(n.id)},h('span',{className:'nav-icon'},n.ic),n.lb);
+      if(n.t==='grp'){
+        const isOp=!!op[n.lb];
+        const hasAct=n.it.some(x=>x.id===pg);
+        return h('div',{key:i},
+          h('div',{className:'nav-grp-hdr',onClick:()=>tog(n.lb)},
+            h('span',{className:'nav-grp-lbl',style:hasAct?{color:'var(--gold)'}:{}},n.lb),
+            h('i',{className:'nav-arrow'+(isOp?' open':'')},'▶')
+          ),
+          h('div',{className:'nav-items-wrap',style:{maxHeight:isOp?n.it.length*44+'px':'0px'}},
+            n.it.map(it=>h('div',{key:it.id,className:'nav-item'+(pg===it.id?' active':''),onClick:()=>setPg(it.id)},h('span',{className:'nav-icon'},it.ic),it.lb))
+          )
+        );
+      }
+      return null;
+    })),
+    h('div',{style:{padding:'8px 0',borderTop:'1px solid rgba(255,255,255,.06)',flexShrink:0}},
+      h('div',{style:{padding:'8px 14px',fontFamily:'sans-serif',fontSize:10,color:'rgba(201,168,76,.65)',marginBottom:2}},user.name),
+      h('div',{className:'nav-solo',onClick:logout},h('span',{className:'nav-icon'},'🚪'),'Cerrar sesión')
+    )
+  );
+}
+
+function LoginScreen({onLogin}){
+  const[email,setEmail]=useState('');
+  const[pass,setPass]=useState('');
+  const[err,setErr]=useState('');
+  const doLogin=()=>{
+    const u=USERS.find(x=>x.email.toLowerCase()===email.toLowerCase().trim()&&x.pass===pass.trim());
+    if(u){onLogin(u);}else{setErr('Email o contraseña incorrectos');}
+  };
+  const onKey=e=>{if(e.key==='Enter')doLogin();};
+  return h('div',{className:'login-wrap'},
+    h('div',{className:'login-card'},
+      h('div',{className:'login-logo'},'AV'),
+      h('div',{className:'login-brand'},'Alta Vista'),
+      h('div',{className:'login-sub'},'Sales Platform · Lutecia Americas'),
+      h('input',{className:'login-input',type:'email',placeholder:'Email',value:email,onChange:e=>{setEmail(e.target.value);setErr('');},onKeyDown:onKey,autoCapitalize:'none',autoCorrect:'off',spellCheck:false}),
+      h('input',{className:'login-input',type:'password',placeholder:'Contraseña',value:pass,onChange:e=>{setPass(e.target.value);setErr('');},onKeyDown:onKey}),
+      h('div',{className:'login-error'},err),
+      h('button',{className:'login-btn',onClick:doLogin},'Ingresar'),
+      h('div',{className:'login-footer'},'Lutecia Americas · Av. del Libertador 1002, Piso 13, Vicente López')
+    )
+  );
+}
+
+function App(){
+  const[user,setUser]=useState(null);
+  const[pg,setPg]=useState('dashboard');
+  const[modal,setModal]=useState(null);
+  const[mD,setMD]=useState({});
+  const[oi,setOi]=useState([]);
+  const[prosp,setProsp]=useState([]);
+  const[cli,setCli]=useState([]);
+  const[ord,setOrd]=useState([]);
+  const[vis,setVis]=useState([]);
+  const[act,setAct]=useState([]);
+  const[stab,setStab]=useState('marcas');
+  const[mf,setMf]=useState('Todas');const[lf,setLf]=useState('Todas');const[sq,setSq]=useState('');
+
+  // Load data when user logs in
+  useEffect(()=>{
+    if(user){
+      const d=ldDb(user.id);
+      setProsp(d.prosp||[]);setCli(d.cli||[]);setOrd(d.ord||[]);setVis(d.vis||[]);setAct(d.act||[]);
+    }
+  },[user]);
+
+  // Save data on change
+  useEffect(()=>{
+    if(user)svDb(user.id,{prosp,cli,ord,vis,act});
+  },[prosp,cli,ord,vis,act,user]);
+
+  if(!user)return h(LoginScreen,{onLogin:u=>setUser(u)});
+
+  const om=(t,d={})=>{setModal(t);setMD(d);setOi([])};
+  const cm=()=>{setModal(null);setMD({});setOi([])};
+
+  const pp={prosp,setProsp,cli,setCli,ord,setOrd,vis,setVis,act,setAct,om};
+  const rc=()=>{switch(pg){case 'dashboard':return h(Dash,pp);case 'buscar':return h(Buscar,pp);case 'prospectos':return h(Prosp,pp);case 'pipeline':return h(Pipe,pp);case 'clientes':return h(Cli,pp);case 'ordenes':return h(Ord,pp);case 'visitas':return h(Vis,pp);case 'activaciones':return h(Act,pp);case 'settings':return h(Sett,{stab,setStab,mf,setMf,lf,setLf,sq,setSq});default:return h(MT,{ic:'📋',tt:PTITLES[pg]||pg,msg:'Módulo próximamente'});}};
+
+  return h('div',{className:'crm-wrap'},
+    h(Sidebar,{pg,setPg,logout:()=>{setUser(null);setPg('dashboard');},user}),
+    h('div',{className:'main'},
+      h('div',{style:{height:'52px',background:'white',borderBottom:'2px solid var(--gold)',display:'flex',alignItems:'center',padding:'0 16px',gap:'8px',flexShrink:0}},
+        h('div',{className:'tb-av'},'AV'),
+        h('span',{className:'tb-title'},'Alta Vista · Lutecia'),
+        h('span',{className:'tb-sep'},'›'),
+        h('span',{className:'tb-page'},PTITLES[pg]||pg),
+        h('div',{className:'tb-actions'},
+          h('div',{className:'user-chip'},
+            h('div',{className:'avatar',style:{width:'22px',height:'22px',fontSize:'9px'}},user.name.split(' ').map(x=>x[0]).join('').slice(0,2)),
+            h('span',{className:'user-chip-name'},user.name)
+          ),
+          pg==='prospectos'&&h('button',{className:'btn btn-primary',onClick:()=>om('prospecto')},'+ Prospecto'),
+          pg==='clientes'&&h('button',{className:'btn btn-primary',onClick:()=>om('cliente')},'+ Cliente'),
+          pg==='ordenes'&&h('button',{className:'btn btn-primary',onClick:()=>om('orden')},'+ Orden'),
+          pg==='visitas'&&h('button',{className:'btn btn-primary',onClick:()=>om('visita')},'+ Visita'),
+          pg==='activaciones'&&h('button',{className:'btn btn-primary',onClick:()=>om('activacion')},'+ Activación')
+        )
+      ),
+      h('div',{className:'content'},rc())
+    ),
+    modal&&h(Mod,{type:modal,data:mD,close:cm,items:oi,setItems:setOi,cli,prosp,onSave:(t,d,its)=>{
+      const now=new Date().toLocaleDateString('es-AR');
+      if(t==='prospecto')setProsp(p=>[...p,{...d,id:Date.now(),etapa:'Lead',fecha:now}]);
+      if(t==='cliente')setCli(c=>[...c,{...d,id:Date.now(),fecha:now}]);
+      if(t==='orden'){const tot=its.reduce((s,i)=>s+(i.sub||0),0);setOrd(o=>[...o,{...d,id:Date.now(),estado:'Borrador',fecha:now,items:its,total:tot}]);}
+      if(t==='visita')setVis(v=>[...v,{...d,id:Date.now(),fecha:now}]);
+      if(t==='activacion')setAct(a=>[...a,{...d,id:Date.now(),fecha:now}]);
+      cm();
+    }})
+  );
+}
+
+function Dash({prosp,cli,ord,vis,act}){
+  const rev=ord.reduce((s,o)=>s+(o.total||0),0);
+  return h('div',null,
+    h('div',{className:'kpi-grid'},KPI('Clientes',cli.length,'Activos'),KPI('Prospectos',prosp.length,'En seguimiento'),KPI('Órdenes',ord.length,'Generadas'),KPI('Revenue ARS',rev>0?fc(rev):'—','Acumulado')),
+    h('div',{className:'dash-grid'},
+      h('div',{className:'card'},h('div',{className:'card-header'},h('span',{className:'card-title'},'Pipeline')),h('div',{className:'card-body'},STAGES.map(s=>{const n=prosp.filter(p=>(p.etapa||'Lead')===s).length;return h('div',{key:s,style:{display:'flex',alignItems:'center',gap:8,padding:'6px 0',borderBottom:'1px solid var(--border)',fontFamily:'sans-serif',fontSize:11}},h('span',{style:{width:90,color:'var(--text2)',flexShrink:0}},s),h('div',{style:{flex:1,height:6,background:'var(--blue-light)',borderRadius:3}},h('div',{style:{width:n>0?Math.min(n*25,100)+'%':'0',height:'100%',background:'var(--blue)',borderRadius:3}})),h('span',{style:{width:22,textAlign:'right',color:'var(--blue)',fontWeight:700}},n));}))),
+      h('div',{className:'card'},h('div',{className:'card-header'},h('span',{className:'card-title'},'Vendedores')),h('div',{className:'card-body'},VEND.map(v=>{const vv=vis.filter(x=>x.vendedor===v.nombre).length,vo=ord.filter(x=>x.vendedor===v.nombre).length;return h('div',{key:v.id,style:{display:'flex',alignItems:'center',gap:8,padding:'7px 0',borderBottom:'1px solid var(--border)'}},h('div',{className:'avatar'},v.nombre.split(' ').map(x=>x[0]).join('').slice(0,2)),h('div',{style:{flex:1}},h('div',{style:{fontFamily:'sans-serif',fontSize:12,fontWeight:600,color:'var(--blue)'}},v.nombre),h('div',{style:{fontFamily:'sans-serif',fontSize:10,color:'var(--text2)'}},vv+' visitas · '+vo+' órdenes')));})))
+    ),
+    h('div',{className:'dash-grid'},
+      h('div',{className:'card'},h('div',{className:'card-header'},h('span',{className:'card-title'},'Últimas Órdenes')),h('div',{className:'card-body'},ord.length===0?h('div',{className:'empty-state',style:{padding:'20px'}},h('div',{className:'empty-icon'},'📦'),h('div',{className:'empty-txt'},'Sin órdenes todavía')):ord.slice(-5).reverse().map(o=>h('div',{key:o.id,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'7px 0',borderBottom:'1px solid var(--border)',fontFamily:'sans-serif',fontSize:11}},h('div',null,h('div',{style:{fontWeight:600,color:'var(--blue)'}},o.cliente||'Sin cliente'),h('div',{style:{color:'var(--text2)',fontSize:10}},o.fecha+' · '+(o.vendedor||'—'))),h('div',{style:{display:'flex',gap:6,alignItems:'center'}},h('span',{className:'badge badge-gray'},o.estado),o.total&&h('span',{style:{color:'var(--blue)',fontWeight:700}},fc(o.total))))))),
+      h('div',{className:'card'},h('div',{className:'card-header'},h('span',{className:'card-title'},'Activaciones')),h('div',{className:'card-body'},act.length===0?h('div',{className:'empty-state',style:{padding:'20px'}},h('div',{className:'empty-icon'},'🍷'),h('div',{className:'empty-txt'},'Sin activaciones')):act.slice(-4).reverse().map(a=>h('div',{key:a.id,style:{padding:'7px 0',borderBottom:'1px solid var(--border)',fontFamily:'sans-serif',fontSize:11}},h('div',{style:{fontWeight:600,color:'var(--blue)'}},a.tipo||'Tasting'),h('div',{style:{color:'var(--text2)',fontSize:10}},(a.cuenta||'—')+' · '+a.fecha)))))
+    )
+  );
+}
+function KPI(lb,v,s){return h('div',{className:'kpi-card'},h('div',{className:'kpi-label'},lb),h('div',{className:'kpi-value'},v),h('div',{className:'kpi-sub'},s));}
+function Buscar({setProsp,prosp}){
+  const[f,setF]=useState({tipo:'Bar / Cantina',provincia:'CABA',potencial:'Medio',vendedor:'Sin asignar'});
+  const u=(k,v)=>setF(p=>({...p,[k]:v}));
+  return h('div',null,
+    h('div',{className:'card',style:{marginBottom:14}},h('div',{className:'card-header'},h('span',{className:'card-title'},'Agregar Prospecto')),h('div',{className:'card-body'},
+      h('div',{className:'form-grid',style:{marginBottom:12}},
+        FI('Nombre *','nombre','',f,u),FS('Tipo','tipo',['Bar / Cantina','Restaurante','Vinoteca / Wine Bar','Hotel / Rooftop','Club / Nightlife','Supermercado / Off-Premise','Distribuidor','Otro'],f,u),
+        FI('Ciudad','ciudad','',f,u),FS('Provincia','provincia',PROV,f,u),
+        FI('Teléfono','telefono','',f,u),FI('Email','email','',f,u),
+        FS('Vendedor','vendedor',['Sin asignar',...VEND.map(v=>v.nombre)],f,u),FS('Potencial','potencial',['Alto','Medio','Bajo'],f,u)
+      ),
+      h('div',{className:'form-row'},h('label',{className:'form-label'},'Notas'),h('textarea',{className:'form-textarea',rows:2,value:f.notas||'',onChange:e=>u('notas',e.target.value)})),
+      h('button',{className:'btn btn-primary',onClick:()=>{if(!f.nombre)return;setProsp(p=>[...p,{...f,id:Date.now(),etapa:'Lead',fecha:new Date().toLocaleDateString('es-AR')}]);setF({tipo:'Bar / Cantina',provincia:'CABA',potencial:'Medio',vendedor:'Sin asignar'});}},'+ Agregar Prospecto')
+    )),
+    prosp.length>0&&h('div',{className:'card'},h('div',{className:'card-header'},h('span',{className:'card-title'},'Prospectos Cargados'),h('span',{style:{fontSize:10,color:'var(--text2)',fontFamily:'sans-serif'}},prosp.length+' total')),h('div',{style:{overflowX:'auto'}},h('table',{className:'tbl'},h('thead',null,h('tr',null,['Nombre','Tipo','Ciudad','Provincia','Vendedor','Potencial','Etapa'].map(c=>h('th',{key:c},c)))),h('tbody',null,prosp.map(p=>h('tr',{key:p.id},h('td',null,h('strong',null,p.nombre)),h('td',null,p.tipo||'—'),h('td',null,p.ciudad||'—'),h('td',null,p.provincia||'—'),h('td',null,p.vendedor||'—'),h('td',null,h('span',{className:p.potencial==='Alto'?'badge badge-green':p.potencial==='Bajo'?'badge badge-red':'badge badge-gold'},p.potencial)),h('td',null,h('span',{className:'badge badge-blue'},p.etapa||'Lead'))))))))
+  );
+}
+function Prosp({prosp,setProsp}){
+  const[q,setQ]=useState('');const[fv,setFv]=useState('Todos');const[fp,setFp]=useState('Todas');const[fe,setFe]=useState('Todas');
+  const fl=prosp.filter(p=>(!q||p.nombre.toLowerCase().includes(q.toLowerCase()))&&(fv==='Todos'||p.vendedor===fv)&&(fp==='Todas'||p.provincia===fp)&&(fe==='Todas'||(p.etapa||'Lead')===fe));
+  return h('div',null,h('div',{className:'filters'},h('input',{className:'search-box',placeholder:'Buscar...',value:q,onChange:e=>setQ(e.target.value)}),h('select',{className:'filter-select',value:fv,onChange:e=>setFv(e.target.value)},h('option',null,'Todos'),...VEND.map(v=>h('option',{key:v.id},v.nombre))),h('select',{className:'filter-select',value:fp,onChange:e=>setFp(e.target.value)},h('option',null,'Todas'),...PROV.map(p=>h('option',{key:p},p))),h('select',{className:'filter-select',value:fe,onChange:e=>setFe(e.target.value)},h('option',null,'Todas'),...STAGES.map(s=>h('option',{key:s},s)))),
+    fl.length===0?h(MT,{ic:'🏪',tt:'Sin prospectos',msg:'Usá "Buscar / Agregar" o el botón de arriba'}):h('div',{style:{overflowX:'auto'}},h('table',{className:'tbl'},h('thead',null,h('tr',null,['Nombre','Tipo','Ciudad','Provincia','Vendedor','Potencial','Etapa','Mover a'].map(c=>h('th',{key:c},c)))),h('tbody',null,fl.map(p=>h('tr',{key:p.id},h('td',null,h('strong',null,p.nombre)),h('td',null,p.tipo||'—'),h('td',null,p.ciudad||'—'),h('td',null,p.provincia||'—'),h('td',null,p.vendedor||'—'),h('td',null,h('span',{className:p.potencial==='Alto'?'badge badge-green':p.potencial==='Bajo'?'badge badge-red':'badge badge-gold'},p.potencial)),h('td',null,h('span',{className:'badge badge-blue'},p.etapa||'Lead')),h('td',null,h('select',{className:'filter-select',value:p.etapa||'Lead',onChange:e=>setProsp(ps=>ps.map(x=>x.id===p.id?{...x,etapa:e.target.value}:x))},STAGES.map(s=>h('option',{key:s},s)))))))))
+  );
+}
+function Pipe({prosp}){return h('div',null,h('div',{className:'pipe-wrap'},STAGES.map(s=>{const its=prosp.filter(p=>(p.etapa||'Lead')===s);return h('div',{key:s,className:'pipe-col'},h('div',{className:'pipe-col-hdr'},h('span',{className:'pipe-col-lbl'},s),h('span',{className:'pipe-col-cnt'},its.length)),its.map(p=>h('div',{key:p.id,className:'prosp-mini'},h('div',{className:'prosp-mini-name'},p.nombre),h('div',{className:'prosp-mini-meta'},'📍 '+(p.provincia||p.ciudad||'—')+'  👤 '+(p.vendedor||'—')))));})  ));}
+function Cli({cli}){const[q,setQ]=useState('');const fl=cli.filter(c=>!q||c.nombre.toLowerCase().includes(q.toLowerCase()));return h('div',null,h('div',{className:'filters'},h('input',{className:'search-box',placeholder:'Buscar...',value:q,onChange:e=>setQ(e.target.value)}),h('select',{className:'filter-select'},h('option',null,'Todos los vendedores'),...VEND.map(v=>h('option',{key:v.id},v.nombre)))),fl.length===0?h(MT,{ic:'🏆',tt:'Sin clientes',msg:''}):h('div',{style:{overflowX:'auto'}},h('table',{className:'tbl'},h('thead',null,h('tr',null,['Nombre','Tipo','Ciudad','Provincia','Vendedor','CUIT','Tier'].map(c=>h('th',{key:c},c)))),h('tbody',null,fl.map(c=>h('tr',{key:c.id},h('td',null,h('strong',null,c.nombre)),h('td',null,c.tipo||'—'),h('td',null,c.ciudad||'—'),h('td',null,c.provincia||'—'),h('td',null,c.vendedor||'—'),h('td',null,c.cuit||'—'),h('td',null,h('span',{className:'badge badge-gold'},c.tier||'Sin tier'))))))));}
+function Ord({ord}){const[fe,setFe]=useState('Todos');const fl=ord.filter(o=>fe==='Todos'||o.estado===fe);return h('div',null,h('div',{className:'filters'},h('select',{className:'filter-select',value:fe,onChange:e=>setFe(e.target.value)},['Todos','Borrador','Enviado','Confirmado'].map(s=>h('option',{key:s},s))),h('select',{className:'filter-select'},h('option',null,'Todos los vendedores'),...VEND.map(v=>h('option',{key:v.id},v.nombre)))),fl.length===0?h(MT,{ic:'📦',tt:'Sin órdenes',msg:'Creá una nueva orden'}):h('div',{style:{overflowX:'auto'}},h('table',{className:'tbl'},h('thead',null,h('tr',null,['N°','Fecha','Cliente','Vendedor','SKUs','Total ARS','Estado'].map(c=>h('th',{key:c},c)))),h('tbody',null,fl.map((o,i)=>h('tr',{key:o.id},h('td',null,'#'+(i+1).toString().padStart(4,'0')),h('td',null,o.fecha),h('td',null,h('strong',null,o.cliente||'—')),h('td',null,o.vendedor||'—'),h('td',null,(o.items||[]).length),h('td',null,h('strong',{style:{color:'var(--blue)'}},fc(o.total||0))),h('td',null,h('span',{className:'badge badge-gray'},o.estado))))))));}
+function Vis({vis}){return h('div',null,h('div',{className:'filters'},h('select',{className:'filter-select'},h('option',null,'Todo el tiempo'),h('option',null,'Últimos 30 días')),h('select',{className:'filter-select'},h('option',null,'Todos los vendedores'),...VEND.map(v=>h('option',{key:v.id},v.nombre)))),vis.length===0?h(MT,{ic:'🚗',tt:'Sin visitas',msg:'Registrá visitas planificadas o espontáneas'}):h('table',{className:'tbl'},h('thead',null,h('tr',null,['Fecha','Cuenta','Tipo','Vendedor','Resultado'].map(c=>h('th',{key:c},c)))),h('tbody',null,vis.map(v=>h('tr',{key:v.id},h('td',null,v.fecha),h('td',null,v.cuenta||'—'),h('td',null,v.tipo||'—'),h('td',null,v.vendedor||'—'),h('td',null,h('span',{className:'badge badge-blue'},v.resultado||'Sin novedad')))))));}
+function Act({act}){return h('div',null,h('div',{className:'filters'},h('select',{className:'filter-select'},h('option',null,'Todos los tipos'),h('option',null,'Tasting'),h('option',null,'Wine Dinner'),h('option',null,'Maridaje'),h('option',null,'MasterClass'),h('option',null,'Evento'))),act.length===0?h(MT,{ic:'🍷',tt:'Sin activaciones',msg:'Registrá tastings, wine dinners y más'}):h('table',{className:'tbl'},h('thead',null,h('tr',null,['Fecha','Tipo','Cuenta','Vendedor','SKUs'].map(c=>h('th',{key:c},c)))),h('tbody',null,act.map(a=>h('tr',{key:a.id},h('td',null,a.fecha),h('td',null,a.tipo||'—'),h('td',null,a.cuenta||'—'),h('td',null,a.vendedor||'—'),h('td',null,a.skus||'—'))))));}
+function Sett({stab,setStab,mf,setMf,lf,setLf,sq,setSq}){
+  const tabs=['Marcas & SKUs','Vendedores','Provincias','Pedidos Mínimos','Usuarios'];
+  const tkeys=['marcas','vendedores','provincias','pedidos','usuarios'];
+  const lAV=['Todas','Alto','Single Vineyard','Terroir Selection','Los Escasos','Atemporal','Estate Premium','Finca Monteflores','VIVE','Atemporal Esp.','Sparkling','VIVE Sparkling','Altaval'];
+  const lHC=['Todas','Barzi Canale','Gran Reserva','Old Vineyard','Estate HC','Intimo','Blush','Marcus'];
+  const lineas=mf==='Alta Vista'?lAV:mf==='Humberto Canale'?lHC:['Todas'];
+  const fl=PORT.filter(s=>(mf==='Todas'||s.m===(mf==='Alta Vista'?'AV':'HC'))&&(lf==='Todas'||s.l===lf)&&(!sq||s.s.toLowerCase().includes(sq.toLowerCase())));
+  return h('div',null,
+    h('div',{className:'stabs'},tabs.map((t,i)=>h('div',{key:i,className:'stab'+(stab===tkeys[i]?' active':''),onClick:()=>setStab(tkeys[i])},t))),
+    stab==='marcas'&&h('div',{className:'ss'},h('div',{className:'ss-title'},'Portfolio · Lista Mayo 2026 con IVA'),h('div',{className:'filters',style:{marginBottom:14}},h('select',{className:'filter-select',value:mf,onChange:e=>{setMf(e.target.value);setLf('Todas')}},['Todas','Alta Vista','Humberto Canale'].map(m=>h('option',{key:m},m))),h('select',{className:'filter-select',value:lf,onChange:e=>setLf(e.target.value)},lineas.map(l=>h('option',{key:l},l))),h('input',{className:'search-box',placeholder:'Buscar SKU...',value:sq,onChange:e=>setSq(e.target.value)})),h('div',{style:{fontFamily:'sans-serif',fontSize:11,color:'var(--text2)',marginBottom:10}},fl.length+' productos'),h('div',{style:{overflowX:'auto'}},h('table',{className:'tbl'},h('thead',null,h('tr',null,['Marca','Línea','SKU','Pres.','$ Unidad','$ Caja','Nota'].map(c=>h('th',{key:c},c)))),h('tbody',null,fl.map(s=>h('tr',{key:s.id},h('td',null,h('span',{className:s.m==='AV'?'badge badge-blue':'badge badge-hc'},s.m)),h('td',null,s.l),h('td',null,h('strong',null,s.s)),h('td',null,s.p),h('td',null,h('strong',{style:{color:'var(--blue)'}},fc(s.u))),h('td',null,fc(s.c)),h('td',null,s.n?h('span',{className:'nota-chip'},s.n):'—'))))))),
+    stab==='vendedores'&&h('div',{className:'ss'},h('div',{className:'ss-title'},'Vendedores'),h('table',{className:'tbl'},h('thead',null,h('tr',null,['','Nombre','Email','Mercado'].map(c=>h('th',{key:c},c)))),h('tbody',null,VEND.map(v=>h('tr',{key:v.id},h('td',null,h('div',{className:'avatar'},v.nombre.split(' ').map(x=>x[0]).join('').slice(0,2))),h('td',null,h('strong',null,v.nombre)),h('td',null,v.email),h('td',null,v.mercado)))))),
+    stab==='provincias'&&h('div',{className:'ss'},h('div',{className:'ss-title'},'Provincias Argentina'),h('div',{style:{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}},PROV.map(p=>h('div',{key:p,style:{padding:'8px 12px',background:'var(--blue-light)',border:'1px solid var(--border)',borderRadius:6,fontFamily:'sans-serif',fontSize:11,color:'var(--blue)'}},'📍 '+p)))),
+    stab==='pedidos'&&h('div',{className:'ss'},h('div',{className:'ss-title'},'Pedidos Mínimos · Mayo 2026'),h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,fontFamily:'sans-serif',fontSize:12}},h('div',{style:{background:'var(--blue-light)',border:'1px solid var(--border)',borderRadius:10,padding:18}},h('div',{style:{fontWeight:700,color:'var(--blue)',marginBottom:10}},'🍷 Alta Vista'),h('div',{style:{marginBottom:6}},'📍 CABA: 6 cajas ó $200.000 c/IVA'),h('div',null,'🗺 Resto del país: 10 cajas ó $250.000')),h('div',{style:{background:'var(--gold-light)',border:'1px solid var(--gold)',borderRadius:10,padding:18}},h('div',{style:{fontWeight:700,color:'var(--blue-dark)',marginBottom:10}},'🏔 Humberto Canale'),h('div',{style:{marginBottom:6}},'📍 CABA: 6 cajas ó $250.000 c/IVA'),h('div',null,'🗺 Resto del país: 10 cajas ó $350.000')))),
+    stab==='usuarios'&&h('div',{className:'ss'},h('div',{className:'ss-title'},'Usuarios del Sistema'),h('table',{className:'tbl'},h('thead',null,h('tr',null,['','Nombre','Email','Rol'].map(c=>h('th',{key:c},c)))),h('tbody',null,USERS.map(u=>h('tr',{key:u.id},h('td',null,h('div',{className:'avatar'},u.name.split(' ').map(x=>x[0]).join('').slice(0,2))),h('td',null,h('strong',null,u.name)),h('td',null,u.email),h('td',null,h('span',{className:u.role==='admin'?'badge badge-gold':'badge badge-blue'},u.role)))))))
+  );
+}
+function MT({ic,tt,msg}){return h('div',{className:'empty-state',style:{marginTop:50}},h('div',{className:'empty-icon'},ic),h('div',{style:{fontFamily:'sans-serif',fontSize:14,color:'var(--blue)',marginBottom:8,fontWeight:700}},tt),h('div',{className:'empty-txt'},msg));}
+function FI(lb,k,ph,f,u){return h('div',{className:'form-row'},h('label',{className:'form-label'},lb),h('input',{className:'form-input',placeholder:ph||'',value:f[k]||'',onChange:e=>u(k,e.target.value)}));}
+function FS(lb,k,opts,f,u){return h('div',{className:'form-row'},h('label',{className:'form-label'},lb),h('select',{className:'form-select',value:f[k]||opts[0],onChange:e=>u(k,e.target.value)},opts.map(o=>h('option',{key:o},o))));}
+function has(t,...args){return h(t,...args);}
+function Mod({type,data,close,onSave,items,setItems,cli,prosp}){
+  const[f,setF]=useState({...data,vendedor:'Sin asignar',provincia:'CABA',moneda:'ARS'});
+  const u=(k,v)=>setF(p=>({...p,[k]:v}));
+  const vns=['Sin asignar',...VEND.map(v=>v.nombre)];
+  const ctas=[...cli.map(c=>c.nombre),...prosp.map(p=>p.nombre)];
+  const addI=()=>{const s=PORT[0];setItems(i=>[...i,{id:Date.now(),sid:s.id,sku:s.s,precio:s.u,cant:1,sub:s.u}]);};
+  const updI=(id,k,val)=>setItems(its=>its.map(i=>{if(i.id!==id)return i;const ni={...i,[k]:val};if(k==='sid'){const s=PORT.find(x=>x.id===parseInt(val));if(s){ni.sku=s.s;ni.precio=s.u;}}ni.cant=Math.max(1,parseInt(ni.cant)||1);ni.sub=ni.precio*ni.cant;return ni;}));
+  const rmI=id=>setItems(its=>its.filter(i=>i.id!==id));
+  const tot=items.reduce((s,i)=>s+(i.sub||0),0);
+  const tits={prospecto:'Agregar Prospecto',cliente:'Nuevo Cliente',orden:'Nueva Orden de Pedido',visita:'Registrar Visita',activacion:'Nueva Activación'};
+  const body=()=>{
+    if(type==='prospecto')return h('div',null,h('div',{className:'form-grid'},FI('Nombre *','nombre','',f,u),FS('Tipo','tipo',['Bar / Cantina','Restaurante','Vinoteca / Wine Bar','Hotel / Rooftop','Club / Nightlife','Supermercado','Distribuidor','Otro'],f,u),FI('Ciudad','ciudad','',f,u),FS('Provincia','provincia',PROV,f,u),FI('Teléfono','telefono','',f,u),FI('Email','email','',f,u),FS('Vendedor','vendedor',vns,f,u),FS('Potencial','potencial',['Alto','Medio','Bajo'],f,u)),h('div',{className:'form-row'},h('label',{className:'form-label'},'Notas'),h('textarea',{className:'form-textarea',rows:2,value:f.notas||'',onChange:e=>u('notas',e.target.value)})));
+    if(type==='cliente')return h('div',null,h('div',{className:'form-grid'},FI('Nombre *','nombre','',f,u),FS('Tipo','tipo',['Bar / Cantina','Restaurante','Vinoteca / Wine Bar','Hotel / Rooftop','Supermercado','Distribuidor','Otro'],f,u),FI('Ciudad','ciudad','',f,u),FS('Provincia','provincia',PROV,f,u),FI('CUIT','cuit','',f,u),FI('Teléfono','telefono','',f,u),FI('Email','email','',f,u),FS('Vendedor','vendedor',vns,f,u),FS('Tier','tier',['Sin tier','🥉 Bronce','🥈 Plata','🥇 Oro','💎 Platino'],f,u),FS('Lista','lista',['— Sin lista —','On-Premise','Off-Premise / Vinoteca','Mayorista'],f,u)));
+    if(type==='orden')return h('div',null,h('div',{className:'form-grid'},h('div',{className:'form-row'},h('label',{className:'form-label'},'Cliente *'),h('select',{className:'form-select',value:f.cliente||'',onChange:e=>u('cliente',e.target.value)},h('option',null,'Seleccionar...'),...cli.map(c=>h('option',{key:c.id},c.nombre)))),FS('Vendedor','vendedor',vns,f,u),FS('Provincia','provincia',PROV,f,u),FS('Moneda','moneda',['ARS','USD','EUR'],f,u)),h('div',{style:{fontFamily:'sans-serif',fontSize:10,letterSpacing:1,textTransform:'uppercase',color:'var(--text2)',margin:'12px 0 8px',fontWeight:700}},'Productos'),items.map(it=>h('div',{key:it.id,className:'sku-row'},h('select',{className:'form-select',style:{fontSize:11},value:it.sid,onChange:e=>updI(it.id,'sid',e.target.value)},PORT.map(s=>h('option',{key:s.id,value:s.id},s.s+' — '+fc(s.u)))),h('input',{className:'form-input',type:'number',min:1,style:{textAlign:'center',padding:'7px 4px'},value:it.cant,onChange:e=>updI(it.id,'cant',e.target.value)}),h('span',{style:{fontFamily:'sans-serif',fontSize:11,color:'var(--text2)'}},fc(it.precio)),h('span',{style:{fontFamily:'sans-serif',fontSize:12,fontWeight:700,color:'var(--blue)'}},fc(it.sub)),h('button',{className:'btn btn-ghost btn-sm',onClick:()=>rmI(it.id)},'✕'))),h('button',{className:'btn btn-ghost',style:{marginTop:8},onClick:addI},'+ Agregar SKU'),items.length>0&&h('div',{style:{textAlign:'right',padding:'10px 0',fontFamily:'sans-serif',fontSize:14,fontWeight:700,color:'var(--blue)'}},'Total: '+fc(tot)),h('div',{className:'form-row',style:{marginTop:8}},h('label',{className:'form-label'},'Notas'),h('textarea',{className:'form-textarea',rows:2,value:f.notas||'',onChange:e=>u('notas',e.target.value)})));
+    if(type==='visita')return h('div',null,h('div',{className:'form-grid'},h('div',{className:'form-row'},h('label',{className:'form-label'},'Cuenta'),h('select',{className:'form-select',value:f.cuenta||'',onChange:e=>u('cuenta',e.target.value)},h('option',null,'Seleccionar...'),...ctas.map(c=>h('option',{key:c},c)))),FS('Tipo','tipo',['Planificada','Espontánea'],f,u),FS('Vendedor','vendedor',vns,f,u),FS('Resultado','resultado',['Sin novedad','Lead','Pedido generado','Conquistado','Descartado'],f,u)),h('div',{className:'form-row'},h('label',{className:'form-label'},'Notas'),h('textarea',{className:'form-textarea',rows:2,value:f.notas||'',onChange:e=>u('notas',e.target.value)})));
+    if(type==='activacion')return h('div',null,h('div',{className:'form-grid'},FS('Tipo *','tipo',['Tasting','Wine Dinner','Maridaje','Bar Takeover','MasterClass','Evento','Sponsoring'],f,u),h('div',{className:'form-row'},h('label',{className:'form-label'},'Cuenta'),h('select',{className:'form-select',value:f.cuenta||'',onChange:e=>u('cuenta',e.target.value)},h('option',null,'Seleccionar...'),...ctas.map(c=>h('option',{key:c},c)))),FS('Vendedor','vendedor',vns,f,u),FI('Asistentes','asistentes','',f,u)),FI('SKUs Presentados','skus','',f,u),h('div',{className:'form-row'},h('label',{className:'form-label'},'Comentarios'),h('textarea',{className:'form-textarea',rows:2,value:f.comentarios||'',onChange:e=>u('comentarios',e.target.value)})));
+    return null;
+  };
+  const ok=f.nombre||f.cliente||f.cuenta||type==='orden';
+  return h('div',{className:'modal-overlay',onClick:e=>{if(e.target===e.currentTarget)close()}},h('div',{className:'modal'},h('div',{className:'modal-title'},tits[type]||type),body(),h('div',{className:'modal-footer'},h('button',{className:'btn btn-ghost',onClick:close},'Cancelar'),h('button',{className:'btn btn-primary',onClick:()=>{if(type==='orden')onSave(type,f,items);else if(ok)onSave(type,f,[]);}},'Guardar'))));
+}
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script>
+</body>
+</html>

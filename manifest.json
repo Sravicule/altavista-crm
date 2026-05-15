@@ -1,0 +1,14 @@
+{
+  "name": "Alta Vista CRM",
+  "short_name": "AV CRM",
+  "description": "Sales Platform - Lutecia Americas",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#001B52",
+  "theme_color": "#002F87",
+  "orientation": "any",
+  "icons": [
+    {"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='28' fill='%23C9A84C'/><text x='96' y='128' text-anchor='middle' font-size='96' font-weight='700' font-family='Georgia' fill='%23001B52'>AV</text></svg>", "sizes": "192x192", "type": "image/svg+xml"},
+    {"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='72' fill='%23C9A84C'/><text x='256' y='340' text-anchor='middle' font-size='256' font-weight='700' font-family='Georgia' fill='%23001B52'>AV</text></svg>", "sizes": "512x512", "type": "image/svg+xml"}
+  ]
+}
