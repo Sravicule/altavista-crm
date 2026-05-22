@@ -409,7 +409,6 @@ function Buscar({setProsp,prosp}){
         FS('Vendedor','vendedor',['Sin asignar',...VEND.map(v=>v.nombre)],f,u),FS('Potencial','potencial',['Alto','Medio','Bajo'],f,u)
       ),
       h('div',{className:'form-row'},h('label',{className:'form-label'},'Notas'),h('textarea',{className:'form-textarea',rows:2,value:f.notas||'',onChange:e=>u('notas',e.target.value)})),
-      h('button',{className:'btn btn-primary',onClick:()=>{if(!f.nombre)return;setProsp(p=>[...p,{...f,id:Date.now(),etapa:'Lead',fecha:new Date().toLocaleDateString('es-AR')}]);setF({tipo:'Bar / Cantina',provincia:'CABA',potencial:'Medio',vendedor:'Sin asignar'});}},'+ Agregar Prospecto')
     )),
     prosp.length>0&&h('div',{className:'card'},h('div',{className:'card-header'},h('span',{className:'card-title'},'Prospectos Cargados'),h('span',{style:{fontSize:10,color:'var(--text2)',fontFamily:'sans-serif'}},prosp.length+' total')),h('div',{style:{overflowX:'auto'}},h('table',{className:'tbl'},h('thead',null,h('tr',null,['Nombre','Tipo','Ciudad','Provincia','Vendedor','Potencial','Etapa'].map(c=>h('th',{key:c},c)))),h('tbody',null,prosp.map(p=>h('tr',{key:p.id},h('td',null,h('strong',null,p.nombre)),h('td',null,p.tipo||'—'),h('td',null,p.ciudad||'—'),h('td',null,p.provincia||'—'),h('td',null,p.vendedor||'—'),h('td',null,h('span',{className:p.potencial==='Alto'?'badge badge-green':p.potencial==='Bajo'?'badge badge-red':'badge badge-gold'},p.potencial)),h('td',null,h('span',{className:'badge badge-blue'},p.etapa||'Lead'))))))))
   );
